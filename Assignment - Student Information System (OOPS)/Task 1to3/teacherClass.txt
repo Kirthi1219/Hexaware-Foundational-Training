@@ -1,0 +1,59 @@
+package entity;
+
+import java.util.List;
+
+public class Teacher {
+
+	//Instance Variables
+	private int teacherId;
+    private String firstName;
+    private String lastName;
+    private String email;
+    
+    //Constructor
+    public Teacher(int teacherId, String firstName, String lastName, String email) {
+        this.teacherId = teacherId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+    
+    public String getFirstName() {
+    	return firstName;
+    }
+    
+    public String getLastName() {
+    	return lastName;
+    }
+    //Updates teacher information
+    public void updateTeacherInfo(String firstName, String lastName, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+    
+    //Displays detailed information about the teacher
+    public void displayTeacherInfo() {
+        System.out.println("Teacher ID: " + teacherId);
+        System.out.println("Name: " + firstName + " " + lastName);
+        System.out.println("Email: " + email);
+    }
+    
+    
+    // Retrieves a list of courses assigned to the teacher
+    public void getAssignedCourses() {
+        System.out.println("Courses assigned to " + firstName + " " + lastName + ":");
+        boolean found = false;
+        List<Course> courses = Course.getAllCourses();
+        for (Course course : courses) {
+            if (course.teacher() != null && course.teacher().equals(this)) {
+                System.out.println("Course ID: " + course.getCourseId() + ", Name: " + course.getCourseName());
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No courses assigned.");
+        }
+    }
+    
+}
