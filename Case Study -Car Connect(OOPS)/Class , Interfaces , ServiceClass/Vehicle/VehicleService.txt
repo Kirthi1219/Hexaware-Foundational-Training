@@ -1,0 +1,52 @@
+package service;
+import entity.Vehicle;
+import java.util.ArrayList;
+import java.util.List;
+
+public class VehicleService implements IVehicleService{
+	
+	private List<Vehicle> vehicles = new ArrayList<>();
+	
+	    //Finds the vehicle with vehicleId
+	    @Override
+	    public Vehicle getVehicleById(int vehicleId) {
+	        return vehicles.stream().filter(v -> v.getVehicleID() == vehicleId).findFirst().orElse(null);
+	    }
+
+	    //Returns a list of available vehicles
+	    @Override
+	    public List<Vehicle> getAvailableVehicles() {
+	        List<Vehicle> availableVehicles = new ArrayList<>();
+	        for (Vehicle v : vehicles) {
+	            if (v.isAvailability()) {
+	                availableVehicles.add(v);
+	            }
+	        }
+	        return availableVehicles;
+	    }
+
+	    //Add a vehicle to the list
+	    @Override
+	    public boolean addVehicle(Vehicle vehicle) {
+	        return vehicles.add(vehicle);
+	    }
+	    
+	    //updates an existing vehicle
+	    @Override
+	    public boolean updateVehicle(Vehicle vehicle) {
+	        Vehicle existing = getVehicleById(vehicle.getVehicleID());
+	        if (existing != null) {
+	            vehicles.remove(existing);
+	            vehicles.add(vehicle);
+	            return true;
+	        }
+	        return false;
+	    }
+
+	    //Deletes a vehicle by id
+	    @Override
+	    public boolean removeVehicle(int vehicleId) {
+	        return vehicles.removeIf(v -> v.getVehicleID() == vehicleId);
+	    }
+	
+}

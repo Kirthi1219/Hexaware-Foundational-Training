@@ -1,0 +1,47 @@
+package service;
+
+import entity.Customer;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CustomerService implements ICustomerService{
+	private List<Customer> customers = new ArrayList<>();  //temporary storage to store the Customer objects
+	
+	
+	// Finds a customer by ID
+	@Override
+	public Customer getCustomerById(int customerId) {
+		return customers.stream().filter(c->c.getCustomerID()==customerId).findFirst().orElse(null);
+	}
+	
+	// Finds a customer by username
+	@Override
+	public Customer getCustomerByUsername(String username) {
+	    return customers.stream().filter(c -> c.getUsername().equals(username)).findFirst().orElse(null);
+	}
+	
+	// Adds a new customer to the list
+	@Override
+	public boolean registerCustomer(Customer customer) {
+	    return customers.add(customer);
+	}
+	
+	// Updates an existing customer's details
+	@Override
+	public boolean updateCustomer(Customer customer) {
+	    Customer existing = getCustomerById(customer.getCustomerID());
+	    if (existing != null) {
+	        customers.remove(existing);
+	        customers.add(customer);
+	        return true;
+	    }
+	    return false;
+	}
+	
+	//Deletes a customer by ID
+	@Override
+	public boolean deleteCustomer(int customerId) {
+	    return customers.removeIf(c -> c.getCustomerID() == customerId);
+	}
+
+}

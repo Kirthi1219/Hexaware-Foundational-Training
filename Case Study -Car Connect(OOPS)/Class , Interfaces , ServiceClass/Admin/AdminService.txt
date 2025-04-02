@@ -1,0 +1,43 @@
+package service;
+import entity.Admin;
+import java.util.ArrayList;
+import java.util.List;
+
+public class AdminService implements IAdminService{
+	private List<Admin> admins = new ArrayList<>();
+	
+	@Override
+	public Admin getAdminById(int adminId) {
+		return admins.stream().filter(a->a.getAdminID()==adminId).findFirst().orElse(null);
+	}
+	
+	@Override
+	public Admin getAdminByUsername(String username) {
+		return admins.stream().filter(a->a.getUsername().equals(username)).findFirst().orElse(null);
+	}
+	
+	 @Override
+	 public boolean registerAdmin(Admin admin) {
+	        // Ensure no duplicate username
+	        if (getAdminByUsername(admin.getUsername()) != null) {
+	            return false;
+	        }
+	        return admins.add(admin);
+	    }  
+	 
+	 @Override
+	 public boolean updateAdmin(Admin admin) {
+	        Admin existing = getAdminById(admin.getAdminID());
+	        if (existing != null) {
+	            admins.remove(existing);
+	            admins.add(admin);
+	            return true;
+	        }
+	        return false;
+	    }
+	 
+	 @Override
+	 public boolean deleteAdmin(int adminId) {
+	        return admins.removeIf(a -> a.getAdminID() == adminId);
+	    }
+}

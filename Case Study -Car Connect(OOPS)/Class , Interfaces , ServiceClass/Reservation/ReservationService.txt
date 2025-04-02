@@ -1,0 +1,48 @@
+package service;
+import entity.Reservation;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ReservationService implements IReservationService {
+	private List<Reservation>reservations=new ArrayList<>();
+	
+	@Override
+    public Reservation getReservationById(int reservationId) {
+        return reservations.stream().filter(r -> r.getReservationID() == reservationId).findFirst().orElse(null);
+    }
+	
+	 @Override
+	    public List<Reservation> getReservationsByCustomerId(int customerId) {
+	        List<Reservation> result = new ArrayList<>();
+	        for (Reservation r : reservations) {
+	            if (r.getCustomerID() == customerId) {
+	                result.add(r);
+	            }
+	        }
+	        return result;
+	    }
+	 
+	 @Override
+	    public boolean createReservation(Reservation reservation) {
+	        double dailyRate = 50.0;  // Replace this with actual vehicle rate retrieval
+	        double totalCost = reservation.calculateTotalCost(dailyRate);
+	        reservation.setTotalCost(totalCost);
+	        return reservations.add(reservation);
+	    }
+	 
+	 @Override
+	    public boolean updateReservation(Reservation reservation) {
+	        Reservation existing = getReservationById(reservation.getReservationID());
+	        if (existing != null) {
+	            reservations.remove(existing);
+	            reservations.add(reservation);
+	            return true;
+	        }
+	        return false;
+	    }
+	 
+	 @Override
+	    public boolean cancelReservation(int reservationId) {
+	        return reservations.removeIf(r -> r.getReservationID() == reservationId);
+	    }
+}
