@@ -1,0 +1,46 @@
+CUSTOM EXCEPTION
+
+package exception;
+public class AdminNotFoundException extends Exception{
+	public AdminNotFoundException(String message) {
+		super(message);
+	}
+}
+
+package exception;
+public class AuthenticationException extends Exception {
+	//Constructor with a custom error message
+	public AuthenticationException(String message) {
+		super(message); /// Calls the constructor of the parent class (Exception)
+	}
+}
+
+package exception;
+public class DatabaseConnectionException extends Exception{
+	public DatabaseConnectionException(String message) {
+		super(message);
+	}
+}
+
+package exception;
+public class InvalidInputException extends Exception{
+	public InvalidInputException(String message) {
+		super(message);
+	}
+}
+
+package exception;
+public class ReservationException extends Exception{
+	public ReservationException(String message) {
+		super(message);
+	}
+}
+
+package exception;
+public class VehicleNotFoundException extends Exception{
+	public VehicleNotFoundException(String message) {
+		super(message);
+	}
+}
+
+
