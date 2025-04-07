@@ -1,0 +1,71 @@
+package entity;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
+public class Reservation {
+	
+	//INSTANCE VARIABLE
+	private int reservationID;
+    private int customerID;
+    private int vehicleID;
+    private String startDate;
+    private String endDate;
+    private double totalCost;
+    private String status;
+    
+    //CONSTRUCTOR
+    public Reservation(int reservationID,int customerID, int vehicleID, String startDate, String endDate,double totalCost, String status) {
+        this.reservationID = reservationID;
+        this.customerID = customerID;
+        this.vehicleID = vehicleID;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.totalCost = totalCost;
+        this.status = status;
+    }
+    
+    //GETTERS AND SETTERS
+    public int getReservationID() {return reservationID;}
+    public void setReservationID(int reservationID) {this.reservationID = reservationID;}
+
+    public int getCustomerID() {return customerID;}
+    public void setCustomerID(int customerID) {this.customerID = customerID;}
+
+    public int getVehicleID() {return vehicleID;}
+    public void setVehicleID(int vehicleID) {this.vehicleID = vehicleID;}
+
+    public String getStartDate() {return startDate;}
+    public void setStartDate(String startDate) {this.startDate = startDate;}
+
+    public String getEndDate() {return endDate;}
+    public void setEndDate(String endDate) {this.endDate = endDate;}
+
+    public double getTotalCost() {return totalCost;}
+    public void setTotalCost(double totalCost) {this.totalCost = totalCost;}
+
+    public String getStatus() {return status;}
+    public void setStatus(String status) {this.status = status;}
+    
+    //METHODS
+    public double calculateTotalCost(double dailyRate) {
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); //used to define the date format as yyyy-MM-dd
+    	LocalDate start = LocalDate.parse(startDate, formatter); //converts the startDate string into a LocalDate object
+    	LocalDate end = LocalDate.parse(endDate, formatter);
+    	long days = ChronoUnit.DAYS.between(start, end); //calculates the number of full days between startDate and endDate
+    	return days * dailyRate;
+    }
+    
+    @Override
+    public String toString() {
+        return "Reservation Details: " +
+                "\nReservation ID: " + reservationID +
+                "\nCustomer ID: " + customerID +
+                "\nVehicle ID: " + vehicleID +
+                "\nStart Date: " + startDate +
+                "\nEnd Date: " + endDate +
+                "\nTotal Cost: $" + totalCost +
+                "\nStatus: " + status;
+    }
+}

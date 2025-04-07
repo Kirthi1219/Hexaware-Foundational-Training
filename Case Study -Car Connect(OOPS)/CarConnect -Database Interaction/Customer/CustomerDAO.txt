@@ -1,0 +1,105 @@
+package dao;
+
+import entity.Customer;
+import exception.DatabaseConnectionException;
+import java.sql.*;
+
+public class CustomerDAO {
+    private Connection connection = DatabaseContext.getConnection();    
+
+
+	// Insert a new customer
+    public boolean createCustomer(Customer customer) throws DatabaseConnectionException {
+        String query = "INSERT INTO customer(firstName, lastName, email, phoneNumber, address, username, password, registrationDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, customer.getFirstName());
+            stmt.setString(2, customer.getLastName());
+            stmt.setString(3, customer.getEmail());
+            stmt.setString(4, customer.getPhoneNumber());
+            stmt.setString(5, customer.getAddress());
+            stmt.setString(6, customer.getUsername());
+            stmt.setString(7, customer.getPassword());
+            stmt.setString(8, customer.getRegistrationDate());
+
+            return stmt.executeUpdate() > 0;
+        } catch (Exception e) {
+            throw new DatabaseConnectionException("Error creating customer"+e.getMessage());
+        }
+    }
+
+    // Get customer by ID
+    public Customer getCustomerById(int customerId) throws DatabaseConnectionException {
+        String query = "SELECT * FROM customer WHERE customerID = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return mapResultSetToCustomer(rs);
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new DatabaseConnectionException("Error retrieving customer by ID");
+        }
+    }
+
+    // Get customer by username
+    public Customer getCustomerByUsername(String username) throws DatabaseConnectionException {
+        String query = "SELECT * FROM customer WHERE username = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return mapResultSetToCustomer(rs);
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new DatabaseConnectionException("Error retrieving customer by username");
+        }
+    }
+
+    // Update a customer
+    public boolean updateCustomer(Customer customer) throws DatabaseConnectionException {
+        String query = "UPDATE customer SET firstName=?, lastName=?, email=?, phoneNumber=?, address=?, username=?, password=?, registrationDate=? WHERE customerID=?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, customer.getFirstName());
+            stmt.setString(2, customer.getLastName());
+            stmt.setString(3, customer.getEmail());
+            stmt.setString(4, customer.getPhoneNumber());
+            stmt.setString(5, customer.getAddress());
+            stmt.setString(6, customer.getUsername());
+            stmt.setString(7, customer.getPassword());
+            stmt.setString(8, customer.getRegistrationDate());
+            stmt.setInt(9, customer.getCustomerID());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new DatabaseConnectionException("Error updating customer");
+        }
+    }
+
+    // Delete a customer
+    public boolean deleteCustomer(int customerId) throws DatabaseConnectionException {
+        String query = "DELETE FROM customer WHERE customerID = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, customerId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new DatabaseConnectionException("Error deleting customer");
+        }
+    }
+
+    // Helper method to map ResultSet to Customer object
+    private Customer mapResultSetToCustomer(ResultSet rs) throws SQLException {
+        return new Customer(
+                rs.getInt("customerID"),
+                rs.getString("firstName"),
+                rs.getString("lastName"),
+                rs.getString("email"),
+                rs.getString("phoneNumber"),
+                rs.getString("address"),
+                rs.getString("username"),
+                rs.getString("password"),
+                rs.getString("registrationDate")
+        );
+    }
+}
