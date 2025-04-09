@@ -1,0 +1,6 @@
+db.properties
+*.class
+*.log
+/bin/
+/target/
+.settings/
