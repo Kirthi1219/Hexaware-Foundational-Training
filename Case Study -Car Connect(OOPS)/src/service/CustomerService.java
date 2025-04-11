@@ -1,0 +1,130 @@
+/*This one is the manager. It stands in between your application and DAO. 
+It takes user input, validates it and then calls the DAO internally. If something goes wrong, it catches and handles errors */
+
+package service;
+
+import entity.Customer;
+import exception.DatabaseConnectionException;
+import exception.InvalidInputException;
+import dao.CustomerDAO;
+
+public class CustomerService implements ICustomerService{
+	 private final CustomerDAO customerDAO = new CustomerDAO();
+	
+	// Finds a customer by ID
+	@Override
+	public Customer getCustomerById(int customerId) {
+		try {
+			if (customerId <= 0) {
+	            throw new InvalidInputException("Invalid customer ID: " + customerId);
+	        }
+            Customer customer = customerDAO.getCustomerById(customerId);
+            if (customer != null) {
+                System.out.println("Customer Details: " + customer);
+            } else {
+            	throw new RuntimeException("Customer not found with ID: " + customerId);
+            }
+            return customer;
+        } catch (DatabaseConnectionException e) {
+            e.printStackTrace();
+            return null;
+        } catch (InvalidInputException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
+	// Finds a customer by username
+	@Override
+	public Customer getCustomerByUsername(String username) {
+		try {
+			if (username == null || username.trim().isEmpty()) {
+	            throw new InvalidInputException("Username cannot be null or empty");
+	        }
+            Customer customer = customerDAO.getCustomerByUsername(username);
+            if (customer != null) {
+                System.out.println("Customer Details: " + customer);
+            } else {
+            	throw new RuntimeException("Customer not found with username: " + username);
+            }
+            return customer;
+        } catch (DatabaseConnectionException e) {
+            e.printStackTrace();
+            return null;
+        } catch (InvalidInputException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	// Adds a new customer to the list
+	@Override
+	public boolean registerCustomer(Customer customer) {
+		try {
+			 if (customer == null) {
+		            throw new InvalidInputException("Customer details cannot be null");
+		        }
+            boolean success = customerDAO.createCustomer(customer);
+            if (success) {
+                System.out.println("Customer registered successfully");
+            } else {
+            	throw new RuntimeException("Customer registration failed.");
+            }
+            return success;
+        } catch (DatabaseConnectionException e) {
+            e.printStackTrace();
+            return false;
+        } catch (InvalidInputException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	// Updates an existing customer's details
+	@Override
+	public boolean updateCustomer(Customer customer) {
+		try {
+			if (customer == null) {
+	            throw new InvalidInputException("Customer details cannot be null");
+	        }
+            boolean success = customerDAO.updateCustomer(customer);
+            if (success) {
+                System.out.println("Customer updated successfully");
+            } else {
+            	 throw new RuntimeException("Customer update failed.");
+            }
+            return success;
+        } catch (DatabaseConnectionException e) {
+            e.printStackTrace();
+            return false;
+        } catch (InvalidInputException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	//Deletes a customer by ID
+	@Override
+	public boolean deleteCustomer(int customerId) {
+		 try {
+			 if (customerId <= 0) {
+		            throw new InvalidInputException("Invalid customer ID: " + customerId);
+		        }
+
+	            boolean success = customerDAO.deleteCustomer(customerId);
+	            if (success) {
+	                System.out.println("Customer deleted successfully with ID: " + customerId);
+	            } else {
+	            	throw new RuntimeException("Customer with ID " + customerId + " not found.");
+	            }
+	            return success;
+	        } catch (DatabaseConnectionException e) {
+	            e.printStackTrace();
+	            return false;
+	        } catch (InvalidInputException e) {
+				e.printStackTrace();
+				return false;
+			}
+	}
+}

@@ -1,0 +1,136 @@
+package dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import entity.Vehicle;
+
+public class VehicleDAO {
+	private Connection connection = DatabaseContext.getConnection();
+	
+	public boolean addVehicle(Vehicle vehicle) {
+        String sql = "INSERT INTO vehicle (vehicleID, model, make, year, color, registrationNumber, availability, dailyRate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, vehicle.getVehicleID());
+            stmt.setString(2, vehicle.getModel());
+            stmt.setString(3, vehicle.getMake());
+            stmt.setInt(4, vehicle.getYear());
+            stmt.setString(5, vehicle.getColor());
+            stmt.setString(6, vehicle.getRegistrationNumber());
+            stmt.setBoolean(7, vehicle.isAvailability());
+            stmt.setDouble(8, vehicle.getDailyRate());
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error adding vehicle: " + e.getMessage());
+            return false;
+        }
+    }
+	
+	 // Get a vehicle by ID
+    public Vehicle getVehicleById(int vehicleId) {
+        String sql = "SELECT * FROM vehicle WHERE vehicleID = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, vehicleId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Vehicle(
+                	rs.getInt("vehicleID"),
+                    rs.getString("model"),
+                    rs.getString("make"),
+                    rs.getInt("year"),
+                    rs.getString("color"),
+                    rs.getString("registrationNumber"),
+                    rs.getBoolean("availability"),
+                    rs.getDouble("dailyRate")
+                );
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving vehicle: " + e.getMessage());
+        }
+        return null;
+    }
+    
+    // Get all available vehicles
+    public List<Vehicle> getAvailableVehicles() {
+        List<Vehicle> availableVehicles = new ArrayList<>();
+        String sql = "SELECT * FROM vehicle WHERE availability = TRUE";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                availableVehicles.add(new Vehicle(
+                	rs.getInt("vehicleID"),
+                    rs.getString("model"),
+                    rs.getString("make"),
+                    rs.getInt("year"),
+                    rs.getString("color"),
+                    rs.getString("registrationNumber"),
+                    rs.getBoolean("availability"),
+                    rs.getDouble("dailyRate")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving available vehicles: " + e.getMessage());
+        }
+        return availableVehicles;
+    }
+    
+    // Update vehicle details
+    public boolean updateVehicle(Vehicle vehicle) {
+        String sql = "UPDATE vehicle SET model = ?, make = ?, year = ?, color = ?, registrationNumber = ?, availability = ?, dailyRate = ? WHERE vehicleID = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, vehicle.getModel());
+            stmt.setString(2, vehicle.getMake());
+            stmt.setInt(3, vehicle.getYear());
+            stmt.setString(4, vehicle.getColor());
+            stmt.setString(5, vehicle.getRegistrationNumber());
+            stmt.setBoolean(6, vehicle.isAvailability());
+            stmt.setDouble(7, vehicle.getDailyRate());
+            stmt.setInt(8, vehicle.getVehicleID());
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating vehicle: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    
+    // Remove a vehicle
+    public boolean removeVehicle(int vehicleId) {
+        String sql = "DELETE FROM vehicle WHERE vehicleID = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, vehicleId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error removing vehicle: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public List<Vehicle> getAllVehicles() {
+        List<Vehicle> allVehicles = new ArrayList<>();
+        String sql = "SELECT * FROM vehicle";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                allVehicles.add(new Vehicle(
+                	rs.getInt("vehicleID"),
+                    rs.getString("model"),
+                    rs.getString("make"),
+                    rs.getInt("year"),
+                    rs.getString("color"),
+                    rs.getString("registrationNumber"),
+                    rs.getBoolean("availability"),
+                    rs.getDouble("dailyRate")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving all vehicles: " + e.getMessage());
+        }
+        return allVehicles;
+    }
+}
