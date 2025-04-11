@@ -1,0 +1,89 @@
+package entity;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import exception.DuplicateEnrollmentException;
+
+public class Enrollment {
+
+	//Instance Variables
+	private int enrollmentId;
+    private Student student; //Student → Data type (a reference to another class named Student)
+    private Course course;  //Course → Data type (a reference to another class named Course)
+    private Date enrollmentDate;
+    private static List<Enrollment> allEnrollments = new ArrayList<>(); //Static list to store all enrollments
+    
+    //Constructor
+    public Enrollment(int enrollmentId, Student student, Course course, Date enrollmentDate) {
+    	 try {
+             if (isAlreadyEnrolled(student, course)) {
+                 throw new DuplicateEnrollmentException("Student " + student.getFirstName() + " " + student.getLastName() + " is already enrolled in " + course.getCourseName());
+             }
+             this.enrollmentId = enrollmentId;
+             this.student = student;
+             this.course = course;
+             this.enrollmentDate = enrollmentDate;
+             allEnrollments.add(this);
+             //System.out.println("Enrollment successful: " + student.getFirstName() + " " + student.getLastName() + " in " + course.getCourseName());
+         } catch (DuplicateEnrollmentException e) {
+             System.out.println("ERROR: " + e.getMessage());
+         }
+    }
+    
+    //Methods
+    public static List<Enrollment> getAllEnrollments() {
+        return allEnrollments;
+    }
+    
+    // Checks if a student is already enrolled in a course
+    private boolean isAlreadyEnrolled(Student student, Course course) {
+        for (Enrollment enrollment : allEnrollments) {
+            if (enrollment.getStudent().equals(student) && enrollment.getCourse().equals(course)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    //Retrieves the student associated with the enrollment
+    public Student getStudent() {
+        return student;
+    }
+
+    //Retrieves the course associated with the enrollment
+    public Course getCourse() {
+        return course;
+    }
+    
+    // Retrieves a list of students enrolled in a given course
+    public static List<Student> getEnrollmentsByCourse(Course course) {
+        List<Student> enrolledStudents = new ArrayList<>();
+        for (Enrollment enrollment : allEnrollments) {
+            if (enrollment.getCourse().equals(course)) {
+                enrolledStudents.add(enrollment.getStudent());
+            }
+        }
+        return enrolledStudents;
+    }
+
+	public int getEnrollmentId() {
+		return enrollmentId;
+	}
+
+	public Date getEnrollmentDate() {
+		return enrollmentDate;
+	}
+
+	@Override
+	public String toString() {
+	    return 
+	           "enrollmentId=" + enrollmentId +
+	           ", student=" + student.getFirstName() + " " + student.getLastName() +
+	           ", course=" + course.getCourseName() +
+	           ", enrollmentDate=" + enrollmentDate ;
+	         
+	}
+
+}

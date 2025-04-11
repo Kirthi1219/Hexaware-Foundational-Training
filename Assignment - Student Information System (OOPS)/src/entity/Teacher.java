@@ -1,0 +1,92 @@
+package entity;
+
+import java.util.List;
+
+import exception.InvalidTeacherDataException;
+
+public class Teacher {
+
+	//Instance Variables
+	private int teacherId;
+    private String firstName;
+    private String lastName;
+    private String email;
+    
+    //Constructor
+    public Teacher(int teacherId, String firstName, String lastName, String email) {
+    	try {
+            if (!isValidEmail(email)) {
+                throw new InvalidTeacherDataException("Invalid email format for teacher: " + firstName + " " + lastName);
+            }
+            this.teacherId = teacherId;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.email = email;
+        } catch (InvalidTeacherDataException e) {
+            System.out.println("ERROR: " + e.getMessage());
+        }
+    }
+    
+    
+    //Methods
+    
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        return email.matches(emailRegex);
+    }
+    public String getFirstName() {
+    	return firstName;
+    }
+    
+    public String getLastName() {
+    	return lastName;
+    }
+    //Updates teacher information
+    public void updateTeacherInfo(String firstName, String lastName, String email) {
+    	 try {
+             if (!isValidEmail(email)) {
+                 throw new InvalidTeacherDataException("Invalid email format for teacher: " + firstName + " " + lastName);
+             }
+             this.firstName = firstName;
+             this.lastName = lastName;
+             this.email = email;
+             System.out.println("Teacher information updated successfully for " + firstName + " " + lastName);
+         } catch (InvalidTeacherDataException e) {
+             System.out.println("ERROR: " + e.getMessage());
+         }
+    }
+    
+    //Displays detailed information about the teacher
+    public void displayTeacherInfo() {
+        System.out.println("Teacher ID: " + teacherId);
+        System.out.println("Name: " + firstName + " " + lastName);
+        System.out.println("Email: " + email);
+    }
+    
+    
+    // Retrieves a list of courses assigned to the teacher
+    public void getAssignedCourses() {
+        System.out.println("Courses assigned to " + firstName + " " + lastName + ":");
+        boolean found = false;
+        List<Course> courses = Course.getAllCourses();
+        for (Course course : courses) {
+            if (course.teacher() != null && course.teacher().equals(this)) {
+                System.out.println("Course ID: " + course.getCourseId() + ", Name: " + course.getCourseName());
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No courses assigned.");
+        }
+    }
+
+
+	public String getEmail() {
+		return email;
+	}
+
+	public int getTeacherId() {
+		return teacherId;
+	}
+
+}
