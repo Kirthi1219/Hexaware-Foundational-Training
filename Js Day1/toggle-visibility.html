@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toggle Visibility</title>
+    <style>
+        #toggleBox {
+            width:200px;
+            height:100px;
+            background-color: lightblue;
+            display:none;
+            margin-top:10px;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="toggleDiv()">Toggle Box</button>
+    <div id="toggleBox"></div>
+
+    <script>
+        function toggleDiv() {
+            const box=document.getElementById("toggleBox");
+            box.style.display= box.style.display==="none" ? "block" : "none";
+        }
+    </script>
+</body>
+
+</html>
